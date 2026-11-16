@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Геометрія 10 клас | Паралельне проєктування</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --text: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #fce7f3 100%);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2em;
+        }
+
+        header p {
+            margin: 10px 0 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-left: 6px solid var(--primary);
+        }
+
+        .card.theory { border-left-color: var(--accent); }
+        .card.interactive { border-left-color: var(--secondary); }
+        .card.quiz { border-left-color: var(--success); }
+
+        h2 {
+            color: var(--primary);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .rule-box {
+            background: #fffbeb;
+            border: 2px solid #fde68a;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .rule-box strong {
+            color: #b45309;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Canvas стилі */
+        .canvas-wrapper {
+            text-align: center;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+            border: 2px dashed #cbd5e1;
+        }
+
+        canvas {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            max-width: 100%;
+        }
+
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        input[type="range"] {
+            accent-color: var(--secondary);
+            cursor: pointer;
+        }
+
+        /* Завдання */
+        .question {
+            background: #f9fafb;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .question p {
+            font-weight: 600;
+            margin-top: 0;
+        }
+
+        .options label {
+            display: block;
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .options label:hover {
+            background: #eef2ff;
+            border-color: var(--primary);
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 10px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1em;
+            width: 150px;
+        }
+
+        button.btn-check {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+            transition: transform 0.2s;
+        }
+
+        button.btn-check:hover {
+            transform: translateY(-2px);
+        }
+
+        .feedback {
+            margin-top: 8px;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        .correct { color: var(--success); }
+        .wrong { color: var(--danger); }
+
+        #result-banner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            background: #ecfdf5;
+            color: #065f46;
+            border: 2px solid var(--success);
+        }
+
+        /* Рефлексія */
+        .ladder {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .ladder-btn {
+            padding: 12px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-size: 1em;
+            transition: 0.2s;
+        }
+
+        .ladder-btn.active {
+            background: #fef3c7;
+            border-color: var(--accent);
+            transform: scale(1.05);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>📐 Паралельне проєктування та його властивості</h1>
+        <p>Інтерактивний робочий аркуш • Геометрія, 10 клас</p>
+    </header>
+
+    <!-- Блок 1: Теорія -->
+    <div class="card theory">
+        <h2>💡 Опорний конспект (Пригадай!)</h2>
+        <p>Якщо точки простору проєктуються на площину $\alpha$ паралельно заданій прямій $l$ (яка перетинає площину $\alpha$), виконуються такі властивості:</p>
+        <div class="rules-grid">
+            <div class="rule-box">
+                <strong>1. Прямі та відрізки</strong>
+                Проєкцією прямої (не паралельної $l$) є пряма, а відрізка — відрізок.
+            </div>
+            <div class="rule-box">
+                <strong>2. Паралельність</strong>
+                Паралельні відрізки проєктуються в паралельні відрізки (або лежать на одній прямій).
+            </div>
+            <div class="rule-box">
+                <strong>3. Відношення довжин</strong>
+                Відношення довжин паралельних відрізків (або відрізків однієї прямої) <b>зберігається</b>!
+            </div>
+        </div>
+    </div>
+
+    <!-- Блок 2: Інтерактивна лабораторія -->
+    <div class="card interactive">
+        <h2>🔬 Інтерактивна лабораторія: «Досліди тінь»</h2>
+        <p>Змінюй кут нахилу променів проєктування $l$ та довжину відрізка $AB$, щоб побачити, як змінюється його паралельна проєкція $A_1B_1$ на площину $\alpha$.</p>
+        
+        <div class="canvas-wrapper">
+            <canvas id="projCanvas" width="700" height="320"></canvas>
+            <div class="controls">
+                <div>
+                    <label for="angleSlider"><b>Кут променів ($l$):</b> <span id="angleVal">60</span>°</label><br>
+                    <input type="range" id="angleSlider" min="35" max="145" value="60">
+                </div>
+                <div>
+                    <label for="tiltSlider"><b>Нахил відрізка $AB$:</b> <span id="tiltVal">20</span>°</label><br>
+                    <input type="range" id="tiltSlider" min="-40" max="40" value="20">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Блок 3: Практикум -->
+    <div class="card quiz">
+        <h2>✍️ Практикум (Перевір себе)</h2>
+
+        <!-- Завдання 1 -->
+        <div class="question" id="q1">
+            <p>1. Чи може паралельною проєкцією квадрата бути ромб, який не є квадратом?</p>
+            <div class="options">
+                <label><input type="radio" name="q1" value="yes"> Так, оскільки кути та довжини непаралельних сторін можуть змінюватися</label>
+                <label><input type="radio" name="q1" value="no"> Ні, квадрат завжди проєктується тільки в квадрат</label>
+                <label><input type="radio" name="q1" value="trap"> Ні, він може проєктуватися тільки в трапецію</label>
+            </div>
+            <div class="feedback" id="fb1"></div>
+        </div>
+
+        <!-- Завдання 2 -->
+        <div class="question" id="q2">
+            <p>2. Яка фігура НЕ може бути паралельною проєкцією трапеції (якщо площина трапеції не паралельна напряму проєктування)?</p>
+            <div class="options">
+                <label><input type="radio" name="q2" value="trap"> Трапеція з іншими кутами</label>
+                <label><input type="radio" name="q2" value="para"> Паралелограм</label>
+                <label><input type="radio" name="q2" value="seg"> Відрізок</label>
+            </div>
+            <div class="feedback" id="fb2"></div>
+        </div>
+
+        <!-- Завдання 3 -->
+        <div class="question" id="q3">
+            <p>3. Точка $C$ ділить відрізок $AB$ у відношенні $AC : CB = 2 : 3$. Відрізок $A_1B_1$ — паралельна проєкція відрізка $AB$, а $C_1$ — проєкція точки $C$. Знайдіть довжину проєкції $A_1C_1$, якщо $C_1B_1 = 12\text{ см}$.</p>
+            <input type="number" id="q3_input" placeholder="Введіть число"> см
+            <div class="feedback" id="fb3"></div>
+        </div>
+
+        <!-- Завдання 4 -->
+        <div class="question" id="q4">
+            <p>4. На рисунку зображено паралельну проєкцію трикутника $ABC$ — трикутник $A_1B_1C_1$. Точка $M$ — середина сторони $AB$. У якому відношенні проєкція $M_1$ ділить сторону $A_1B_1$? (Запишіть у форматі 1:1)</p>
+            <input type="text" id="q4_input" placeholder="Наприклад, 1:2">
+            <div class="feedback" id="fb4"></div>
+        </div>
+
+        <button class="btn-check" onclick="checkAnswers()">🚀 Перевірити відповіді</button>
+        <div id="result-banner"></div>
+    </div>
+
+    <!-- Блок 4: Самооцінювання -->
+    <div class="card">
+        <h2>🪜 Сходинки успіху (Оціни свою роботу)</h2>
+        <p>Обери сходинку, яка найкраще описує твоє розуміння теми сьогодні:</p>
+        <div class="ladder">
+            <button class="ladder-btn" onclick="selectLadder(this)">🌱 Потрібна допомога вчителя</button>
+            <button class="ladder-btn" onclick="selectLadder(this)">🌿 Зрозумів(ла) теорію, але є питання до задач</button>
+            <button class="ladder-btn" onclick="selectLadder(this)">🌳 Усе вдалося! Готовий(а) до складніших завдань</button>
+        </div>
+    </div>
+</div>
+
+<!-- Підключення MathJax для красивих формул -->
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+    // --- ІНТЕРАКТИВНЕ ПОЛОТНО (CANVAS) ---
+    const canvas = document.getElementById('projCanvas');
+    const ctx = canvas.getContext('2d');
+    const angleSlider = document.getElementById('angleSlider');
+    const tiltSlider = document.getElementById('tiltSlider');
+    const angleVal = document.getElementById('angleVal');
+    const tiltVal = document.getElementById('tiltVal');
+
+    function drawProjection() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const rayAngleDeg = parseInt(angleSlider.value);
+        const segTiltDeg = parseInt(tiltSlider.value);
+        angleVal.textContent = rayAngleDeg;
+        tiltVal.textContent = segTiltDeg;
+
+        const planeY = 250; // Рівень площини проекцій
+
+        // 1. Малюємо площину альфа (у перспективі)
+        ctx.fillStyle = '#e0e7ff';
+        ctx.strokeStyle = '#4f46e5';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(80, planeY - 30);
+        ctx.lineTo(650, planeY - 30);
+        ctx.lineTo(600, planeY + 40);
+        ctx.lineTo(30, planeY + 40);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#4f46e5';
+        ctx.font = 'bold 18px Segoe UI';
+        ctx.fillText('α', 55, planeY + 25);
+
+        // 2. Координати відрізка AB у просторі
+        const centerX = 340;
+        const centerY = 110;
+        const halfLen = 90;
+        const tiltRad = segTiltDeg * Math.PI / 180;
+
+        const ax = centerX - halfLen * Math.cos(tiltRad);
+        const ay = centerY - halfLen * Math.sin(tiltRad);
+        const bx = centerX + halfLen * Math.cos(tiltRad);
+        const by = centerY + halfLen * Math.sin(tiltRad);
+
+        // Середина відрізка M
+        const mx = (ax + bx) / 2;
+        const my = (ay + by) / 2;
+
+        // 3. Обчислення проєкцій на площину (y = planeY)
+        const rayRad = rayAngleDeg * Math.PI / 180;
+        // Напрямний вектор променя вниз: dx = cos(rayRad), dy = sin(rayRad)
+        const cot = Math.cos(rayRad) / Math.sin(rayRad);
+
+        const a1x = ax + (planeY - ay) * cot;
+        const b1x = bx + (planeY - by) * cot;
+        const m1x = mx + (planeY - my) * cot;
+
+        // 4. Малюємо проєктуючі промені (пунктир)
+        ctx.setLineDash([6, 6]);
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.5;
+
+        [[ax, ay, a1x], [mx, my, m1x], [bx, by, b1x]].forEach(pt => {
+            ctx.beginPath();
+            ctx.moveTo(pt[0], pt[1]);
+            ctx.lineTo(pt[2], planeY);
+            ctx.stroke();
+        });
+        ctx.setLineDash([]);
+
+        // Малюємо напрямну пряму l збоку
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        const lx1 = 120, ly1 = 40;
+        const lx2 = lx1 + 140 * cot, ly2 = 180;
+        ctx.beginPath();
+        ctx.moveTo(lx1, ly1);
+        ctx.lineTo(lx2, ly2);
+        ctx.stroke();
+        ctx.fillStyle = '#b45309';
+        ctx.fillText('l (напрям)', lx1 - 30, ly1 - 8);
+
+        // 5. Малюємо проєкцію A1B1
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(a1x, planeY);
+        ctx.lineTo(b1x, planeY);
+        ctx.stroke();
+
+        // 6. Малюємо сам відрізок AB
+        ctx.strokeStyle = '#ec4899';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(bx, by);
+        ctx.stroke();
+
+        // Точки та підписи
+        drawPoint(ax, ay, 'A', '#ec4899', -10, -10);
+        drawPoint(mx, my, 'M', '#ec4899', -5, -12);
+        drawPoint(bx, by, 'B', '#ec4899', 8, -10);
+
+        drawPoint(a1x, planeY, 'A₁', '#059669', -10, 22);
+        drawPoint(m1x, planeY, 'M₁', '#059669', -8, 22);
+        drawPoint(b1x, planeY, 'B₁', '#059669', 5, 22);
+    }
+
+    function drawPoint(x, y, label, color, dx, dy) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.font = 'bold 15px Segoe UI';
+        ctx.fillText(label, x + dx, y + dy);
+    }
+
+    angleSlider.addEventListener('input', drawProjection);
+    tiltSlider.addEventListener('input', drawProjection);
+    drawProjection();
+
+    // --- ПЕРЕВІРКА ЗАВДАНЬ ---
+    function checkAnswers() {
+        let score = 0;
+
+        // Питання 1
+        const q1 = document.querySelector('input[name="q1"]:checked');
+        const fb1 = document.getElementById('fb1');
+        if (q1 && q1.value === 'yes') {
+            fb1.innerHTML = '✅ Правильно! Паралелограм (і ромб зокрема) може бути паралельною проєкцією квадрата.';
+            fb1.className = 'feedback correct';
+            score++;
+        } else {
+            fb1.innerHTML = '❌ Помилка. Пригадай: паралельність зберігається, а кути й довжини можуть змінюватися, тому квадрат може проєктуватися в довільний паралелограм (у тому числі ромб).';
+            fb1.className = 'feedback wrong';
+        }
+
+        // Питання 2
+        const q2 = document.querySelector('input[name="q2"]:checked');
+        const fb2 = document.getElementById('fb2');
+        if (q2 && q2.value === 'para') {
+            fb2.innerHTML = '✅ Правильно! У трапеції дві сторони паралельні, а дві інші — ні. Оскільки паралельність зберігається, паралелограм утворитися не може.';
+            fb2.className = 'feedback correct';
+            score++;
+        } else {
+            fb2.innerHTML = '❌ Помилка. Непаралельні бічні сторони трапеції не можуть стати паралельними при проєктуванні.';
+            fb2.className = 'feedback wrong';
+        }
+
+        // Питання 3
+        const q3 = parseFloat(document.getElementById('q3_input').value);
+        const fb3 = document.getElementById('fb3');
+        if (q3 === 8) {
+            fb3.innerHTML = '✅ Чудово! Відношення зберігається: A₁C₁ : 12 = 2 : 3 ⇒ A₁C₁ = (12 · 2) / 3 = 8 см.';
+            fb3.className = 'feedback correct';
+            score++;
+        } else {
+            fb3.innerHTML = '❌ Спробуй ще раз. Використай властивість: A₁C₁ : C₁B₁ = AC : CB = 2 : 3.';
+            fb3.className = 'feedback wrong';
+        }
+
+        // Питання 4
+        const q4 = document.getElementById('q4_input').value.trim().replace(/\s+/g, '');
+        const fb4 = document.getElementById('fb4');
+        if (q4 === '1:1') {
+            fb4.innerHTML = '✅ Саме так! Середина відрізка завжди проєктується в середину його проєкції (1:1).';
+            fb4.className = 'feedback correct';
+            score++;
+        } else {
+            fb4.innerHTML = '❌ Подумай: якщо точка M ділить відрізок навпіл (1:1), то відношення зберігається і для проєкції.';
+            fb4.className = 'feedback wrong';
+        }
+
+        // Загальний результат
+        const banner = document.getElementById('result-banner');
+        banner.style.display = 'block';
+        banner.innerHTML = `Твій результат: ${score} з 4 правильних відповідей! 🎉`;
+    }
+
+    // --- ВИБІР СХОДИНКИ УСПІХУ ---
+    function selectLadder(btn) {
+        document.querySelectorAll('.ladder-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
